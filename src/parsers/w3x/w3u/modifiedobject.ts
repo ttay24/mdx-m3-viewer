@@ -16,18 +16,15 @@ export default class ModifiedObject {
     this.oldId = stream.readBinary(4);
     this.newId = stream.readBinary(4);
 
-    console.log(`modified object: ${this.oldId} => ${this.newId}`);
-
+    // if using version 3 (introduced in 1.33), then we need to read these bytes and skip
+    // some of this stuff to match the spec
     if (version >= 3) {
       this.skipBytes = stream.readUint32();
-      console.log(`skipBytes: ${this.skipBytes}`);
       this.skippyBuffer = stream.readBinary(4 * this.skipBytes);
-      console.log(`skippy data: ${this.skippyBuffer}`);
     }
 
+    // read the number of files
     const numModifications = stream.readUint32();
-    console.log(`numModifications: ${numModifications}`);
-
     for (let i = 0; i < numModifications; i++) {
       const modification = new Modification();
 
