@@ -1,5 +1,5 @@
-import BinaryStream from '../../../common/binarystream';
-import ModificationTable from './modificationtable';
+import BinaryStream from "../../../common/binarystream";
+import ModificationTable from "./modificationtable";
 
 /**
  * war3map.w3u - the unit modification file.
@@ -21,21 +21,25 @@ export default class War3MapW3u {
     }
 
     this.version = stream.readInt32();
-    this.originalTable.load(stream, false);
-    this.customTable.load(stream, false);
+    this.originalTable.load(stream, false, this.version);
+    this.customTable.load(stream, false, this.version);
   }
 
   save(): Uint8Array {
     const stream = new BinaryStream(new ArrayBuffer(this.getByteLength()));
 
     stream.writeInt32(this.version);
-    this.originalTable.save(stream, false);
-    this.customTable.save(stream, false);
+    this.originalTable.save(stream, false, this.version);
+    this.customTable.save(stream, false, this.version);
 
     return stream.uint8array;
   }
 
   getByteLength(): number {
-    return 4 + this.originalTable.getByteLength(false) + this.customTable.getByteLength(false);
+    return (
+      4 +
+      this.originalTable.getByteLength(false) +
+      this.customTable.getByteLength(false)
+    );
   }
 }
